@@ -2,8 +2,18 @@ import { useState } from 'react'
 
 const Button = ({onClick, text}) => <button onClick={onClick} >{text}</button>
 const Display = ({text, number}) => <p>{text} {number}</p>
+
 const Statistics = ({good, neutral, bad}) => {
   const total=good+neutral+bad
+
+  if (total === 0) {
+    return (
+      <div>
+        <p>No feedback given</p>
+      </div>
+    )
+  }
+  
   return (
     <div>
     <h1> Statistics</h1>
