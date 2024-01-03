@@ -1,10 +1,11 @@
 import { useState } from 'react'
 
-const Anecdote = ({header, anecdote}) => {
+const Anecdote = ({header, anecdote, points}) => {
   return (
     <div>
     <h1>{header}</h1>
     <p>{anecdote}</p>
+    <p>has {points} votes</p>
     </div>
   )
 }
@@ -34,32 +35,30 @@ const App = () => {
     setPoints(copy) 
   }
 
-  const mostVotedAnecdote =() => {
+  const maxIndex =() => {
     let maxIndex = 0
-    
+
     for (let i=0, max=0; i<points.length; i++) {
       if(points[i]>max) {
         maxIndex=i
         max=points[maxIndex]
       }
     }
-
-    return anecdotes[maxIndex]
+    
+    return maxIndex
   }
 
    return (
     <div>
-      <Anecdote header="Anectode of the day" anecdote={anecdotes[selected]} /> 
+      <Anecdote header="Anectode of the day" anecdote={anecdotes[selected]} points={points[selected]} /> 
       <div>
         <button onClick={handleClickNext}>next anecdote</button>
         <button onClick={handleClickVote}>vote</button>
       </div>
       {points.every(elem => elem === 0) ? null : (
-          <Anecdote header="Anectode with most votes" anecdote={mostVotedAnecdote()} /> 
+          <Anecdote header="Anectode with most votes" anecdote={anecdotes[maxIndex()]} points={points[maxIndex()]} /> 
         ) 
       }
-    
-
     </div>
   )
 }
