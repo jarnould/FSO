@@ -4,7 +4,7 @@ const Content = ({parts}) => {
   return (
     <div>
       {parts.map((part)=> <Part key={part.id} partName={part.name} partExercises={part.exercises} />)}
-      <h3>Total of {parts.reduce((sum, part) => sum + part.exercises, 0)} </h3>
+      <h3>Total of {parts.reduce((sum, part) => sum + part.exercises, 0)} exercices</h3>
     </div>
   )
 }
