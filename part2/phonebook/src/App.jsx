@@ -1,7 +1,34 @@
 import { useState } from 'react'
 
-const Persons = ({persons}) => persons.map(person => <p key={person.name}>{person.name} {person.number}</p>)
+const Filter = ({onChange}) => 
+  <div>
+    filter shown with: <input onChange={onChange}/>
+  </div> 
 
+const PersonForm = ({onSubmit, onNameChange, onNumberChange}) =>  
+  <form onSubmit={onSubmit}>
+    <div>
+      name: <input onChange={onNameChange}/>
+    </div>
+    <div>
+      number: <input onChange={onNumberChange}/>
+    </div>
+    <div>
+      <button type="submit">add</button>
+    </div>
+  </form>
+
+const Persons = ({persons, filter}) => {
+  const personsFiltered = persons.filter(person => person.name.toLowerCase().indexOf(filter.toLowerCase())!==-1)
+  return (
+    personsFiltered.map(person => 
+      <Person key={person.name} name={person.name} number={person.number} />
+    )
+  )
+}  
+
+const Person = ({name, number}) => 
+  <p>{name} {number}</p>
 
 const App = () => {
   const [persons, setPersons] = useState([
@@ -12,21 +39,17 @@ const App = () => {
   ])
   const [newName, setNewName] = useState('')
   const [newNumber, setNewNumber] = useState('')
-  const [showPersons, setShowPersons] = useState(persons)
+  const [filter, setFilter] = useState('')
 
   const handleNameChange = (ev) => setNewName(ev.target.value)
   const handleNumberChange = (ev) => setNewNumber(ev.target.value)
-  const handleFilterChange = (ev) => setShowPersons(
-    persons.filter(
-       person => person.name.toLowerCase().indexOf(ev.target.value.toLowerCase())!==-1
-    )
-  )
-
+  const handleFilterChange = (ev) => setFilter((ev.target.value))
+  
   const addPerson = (el) => {
     el.preventDefault()
     if (newName  && newNumber) { 
       persons.findIndex(el => el.name === newName) === -1  ? 
-        setPersons(persons.concat({name: newName, number: newNumber})) 
+        setPersons(persons.concat({name: newName, number: newNumber}))
         : alert(`${newName} is already added to phonebook`)
     }
     else alert(`name and phone must be filled in`)
@@ -35,24 +58,11 @@ const App = () => {
   return (
     <div>
       <h2>Phonebook</h2>
-      <div>
-        filter shown with: <input onChange={handleFilterChange}/>
-      </div>
-      <h2>add a new</h2>
-      <form onSubmit={addPerson}>
-        <div>
-          name: <input onChange={handleNameChange}/>
-        </div>
-        <div>
-          number: <input onChange={handleNumberChange}/>
-        </div>
-        <div>
-          <button type="submit">add</button>
-        </div>
-      </form>
-      
+      <Filter onChange={handleFilterChange}/>
+      <h3>add a new</h3>
+      <PersonForm onSubmit={addPerson} onNameChange={handleNameChange} onNumberChange={handleNumberChange} /> 
       <h2>Numbers</h2>
-      <Persons persons={showPersons} /> 
+      <Persons persons={persons} filter={filter} /> 
     </div>
   )
 }
