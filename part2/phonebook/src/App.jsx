@@ -50,8 +50,11 @@ const App = () => {
   const addPerson = (el) => {
     el.preventDefault()
     if (newName  && newNumber) { 
-      persons.findIndex(el => el.name === newName) === -1  ? 
-        setPersons(persons.concat({name: newName, number: newNumber}))
+      persons.findIndex(el => el.name === newName) === -1  ?
+        axios.post('http://localhost:3001/persons',{name: newName, number: newNumber})
+        .then(response => setPersons(persons.concat(response.data)))
+         
+  //      setPersons(persons.concat({name: newName, number: newNumber}))
         : alert(`${newName} is already added to phonebook`)
     }
     else alert(`name and phone must be filled in`)
