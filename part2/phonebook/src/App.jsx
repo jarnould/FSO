@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react'
 import axios from 'axios'
 import personService from './services/persons'
+import persons from './services/persons'
 
 const Filter = ({onChange}) => 
   <div>
@@ -20,17 +21,23 @@ const PersonForm = ({onSubmit, onNameChange, onNumberChange}) =>
     </div>
   </form>
 
-const Persons = ({persons, filter}) => {
+const Persons = ({persons, filter, onClickDelete}) => {
   const personsFiltered = persons.filter(person => person.name.toLowerCase().indexOf(filter.toLowerCase())!==-1)
   return (
     personsFiltered.map(person => 
-      <Person key={person.name} name={person.name} number={person.number} />
+      <Person key={person.id} person={person} onClickDelete={onClickDelete}/>
     )
   )
 }  
 
-const Person = ({name, number}) => 
-  <p>{name} {number}</p>
+const Person = ({person, onClickDelete }) => {
+  return (
+    <p>
+      {person.name} {person.number} {''}
+      <button  onClick={() => onClickDelete(person.id, person.name)}>delete</button>
+    </p>
+  )
+}
 
 const App = () => {
   const [persons, setPersons] = useState([])
@@ -47,6 +54,18 @@ const App = () => {
   const handleNameChange = (ev) => setNewName(ev.target.value)
   const handleNumberChange = (ev) => setNewNumber(ev.target.value)
   const handleFilterChange = (ev) => setFilter((ev.target.value))
+  const handleClickDelete = (id, name) => {
+    if (confirm(`Delete ${name} ?`)) 
+      personService
+        .deletePerson(id)
+        .then (
+          setPersons(
+            persons.filter((person)=> person.id !== id )
+          )
+        )
+  }
+     
+  
   
   const addPerson = (el) => {
     el.preventDefault()
@@ -69,7 +88,7 @@ const App = () => {
       <h3>add a new</h3>
       <PersonForm onSubmit={addPerson} onNameChange={handleNameChange} onNumberChange={handleNumberChange} /> 
       <h2>Numbers</h2>
-      <Persons persons={persons} filter={filter} /> 
+      <Persons persons={persons} filter={filter} onClickDelete={handleClickDelete} /> 
     </div>
   )
 }
