@@ -65,21 +65,26 @@ const App = () => {
         )
   }
      
-  
-  
-  const addPerson = (el) => {
+    const addPerson = (el) => {
     el.preventDefault()
-    if (newName  && newNumber) { 
-      persons.findIndex(el => el.name === newName) === -1  ?
+    if (newName  && newNumber) {
+      const newPerson=persons.find(el => el.name === newName) 
+      if (newPerson === undefined) 
         personService
         .createPerson({name: newName, number: newNumber})
         .then(response => setPersons(persons.concat(response.data)))
          
   //      setPersons(persons.concat({name: newName, number: newNumber}))
-        : alert(`${newName} is already added to phonebook`)
+      else if(confirm(`${newName} is already added to phonebook, replace the old number with a new one ?`))
+        personService
+          .updatePerson(newPerson.id, {...newPerson, number: newNumber})
+          .then(response =>
+            setPersons(persons.map(person => person.id !== response.data.id ? person : response.data))    
+          )  
     }
     else alert(`name and phone must be filled in`)
-  }
+    } 
+  
 
   return (
     <div>
