@@ -31,20 +31,20 @@ const PersonForm = ({onSubmit, onNameChange, onNumberChange}) =>
     </div>
   </form>
 
-const Persons = ({persons, filter, deletePerson}) => {
+const Persons = ({persons, filter, onClickDelete}) => {
   const personsFiltered = persons.filter(person => person.name.toLowerCase().indexOf(filter.toLowerCase())!==-1)
   return (
     personsFiltered.map(person => 
-      <Person key={person.id} person={person} deletePerson={deletePerson}/>
+      <Person key={person.id} person={person} onClickDelete={onClickDelete}/>
     )
   )
 }  
 
-const Person = ({person, deletePerson }) => {
+const Person = ({person, onClickDelete }) => {
   return (
     <p>
       {person.name} {person.number} {''}
-      <button  onClick={() => deletePerson(person.id, person.name)}>delete</button>
+      <button  onClick={() => onClickDelete(person.id, person.name)}>delete</button>
     </p>
   )
 }
@@ -114,7 +114,7 @@ const App = () => {
       <h3>add a new</h3>
       <PersonForm onSubmit={addPerson} onNameChange={handleNameChange} onNumberChange={handleNumberChange} /> 
       <h2>Numbers</h2>
-      <Persons persons={persons} filter={filter} deletePerson={deletePerson} /> 
+      <Persons persons={persons} filter={filter} onClickDelete={deletePerson} /> 
     </div>
   )
 }
