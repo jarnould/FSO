@@ -74,3 +74,47 @@ describe('total likes', () => {
       assert.strictEqual(result, 36)
     })
 })
+
+describe('favorite blog', () => {
+    test('Of empty list is undefined', () => {
+        const result = listHelper.favoriteBlog([])
+        assert.deepStrictEqual(result, undefined)
+      })
+
+    test('when list has only one blog, equals the blog', () => {
+        const result = listHelper.favoriteBlog([blogs[0]])
+        assert.deepStrictEqual(result,blogs[0])
+    })
+       
+    test('Of a bigger list', () => {
+      const result = listHelper.favoriteBlog(blogs)
+      assert.deepStrictEqual(result, blogs[2])
+    })
+})
+
+describe('Author with the largest amount of blogs', () => {
+  test('Of empty list is undefined', () => {
+      const result = listHelper.mostBlogs([])
+      assert.deepStrictEqual(result, undefined)
+    })
+
+  test('when list has only one blog, equals the author of the blog', () => {
+      const result = listHelper.mostBlogs([blogs[0]])
+      assert.deepStrictEqual(result, {author: "Michael Chan", blogs: 1})
+  })
+     
+  test('Of a bigger list', () => {
+    const result = listHelper.mostBlogs(blogs)
+    assert.deepStrictEqual(result,  {author: "Robert C. Martin", blogs: 3})
+  })
+})
+
+
+
+
+
+
+
+
+
+
