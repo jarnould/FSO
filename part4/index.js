@@ -1,4 +1,3 @@
-
 const app = require('./app')
 const {info, error} = require('./utils/logger')
 const config = require('./utils/config')

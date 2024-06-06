@@ -9,6 +9,12 @@ const api = supertest(app)
 
 const Blog = require('../models/blog')
 
+const newBlog = {
+    title: "New Blog",
+    author: "Jean DONG",
+    url: "http://fakeurl.html",
+    likes: 4,
+}
 
 beforeEach(async () => {
     await Blog.deleteMany({})
@@ -35,13 +41,6 @@ test('unique identifier property of the blog posts is named id', async () => {
 }) 
 
 test ('HTTP POST request to the /api/blogs URL successfully creates a new blog post', async () => {
-    const newBlog = {
-        title: "New Blog",
-        author: "Jean DONG",
-        url: "http://fakeurl.html",
-        likes: 4,
-    }
-    
     await api
     .post('/api/blogs')
     .send(newBlog)
@@ -54,16 +53,13 @@ test ('HTTP POST request to the /api/blogs URL successfully creates a new blog p
     assert.deepStrictEqual(savedblog, newBlog)
 })
 
-test ('if the likes property is missing from the request, it will default to the value 0' , async () => {
-    const newBlog = {
-        title: "New Blog",
-        author: "Jean DONG",
-        url: "http://fakeurl.html",
-    } 
+test ('Default likes porpertie value is 0' , async () => {
+    const {likes, ...blog} = newBlog
+
 
     await api
     .post('/api/blogs')
-    .send(newBlog)
+    .send(blog)
     .expect(201)
     .expect('Content-Type', /application\/json/)
 
@@ -71,7 +67,26 @@ test ('if the likes property is missing from the request, it will default to the
     savedblog = response.body.pop()
     assert.strictEqual(savedblog.likes, 0)    
 })
- 
+
+test ('title or url properties are not missing from the request data', async() => {
+    var {title, ...blog} = newBlog
+    
+    response = await api
+    .post('/api/blogs')
+    .send(blog)
+    .expect(400)
+    .expect('Content-Type', /application\/json/)
+    assert.strictEqual(response.body.error,'Blog validation failed: title: Path `title` is required.')
+
+    var {url, ...blog} = newBlog
+    response = await api
+    .post('/api/blogs')
+    .send(blog)
+    .expect(400)    
+    .expect('Content-Type', /application\/json/)
+    assert.strictEqual(response.body.error,'Blog validation failed: url: Path `url` is required.')
+})
+
 after(async () => {
   await mongoose.connection.close()
 })
