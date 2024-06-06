@@ -40,7 +40,7 @@ test ('HTTP POST request to the /api/blogs URL successfully creates a new blog p
         author: "Jean DONG",
         url: "http://fakeurl.html",
         likes: 4,
-      }
+    }
     
     await api
     .post('/api/blogs')
@@ -52,6 +52,24 @@ test ('HTTP POST request to the /api/blogs URL successfully creates a new blog p
     savedblog = response.body.pop()
     delete savedblog.id
     assert.deepStrictEqual(savedblog, newBlog)
+})
+
+test ('if the likes property is missing from the request, it will default to the value 0' , async () => {
+    const newBlog = {
+        title: "New Blog",
+        author: "Jean DONG",
+        url: "http://fakeurl.html",
+    } 
+
+    await api
+    .post('/api/blogs')
+    .send(newBlog)
+    .expect(201)
+    .expect('Content-Type', /application\/json/)
+
+    const response = await api.get('/api/blogs')
+    savedblog = response.body.pop()
+    assert.strictEqual(savedblog.likes, 0)    
 })
  
 after(async () => {
