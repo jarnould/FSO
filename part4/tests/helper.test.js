@@ -1,11 +1,7 @@
 const { test, describe } = require('node:test')
 const assert = require('node:assert')
 const listHelper = require('../utils/list_helper')
-const {initialBlogs} = require('./test_helper')
 
-const blogs=initialBlogs
-
-/*
 const blogs = [
     {
       _id: "5a422a851b54a676234d17f7",
@@ -56,7 +52,6 @@ const blogs = [
       __v: 0
     }  
 ]
-*/
 
 test('dummy returns one', () => {
   const result = listHelper.dummy([])
