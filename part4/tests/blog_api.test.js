@@ -33,8 +33,27 @@ test('unique identifier property of the blog posts is named id', async () => {
     const namedId = response.body.filter(r => r.id !== undefined )
     assert.strictEqual(namedId.length, response.body.length)
 }) 
- 
 
+test ('HTTP POST request to the /api/blogs URL successfully creates a new blog post', async () => {
+    const newBlog = {
+        title: "New Blog",
+        author: "Jean DONG",
+        url: "http://fakeurl.html",
+        likes: 4,
+      }
+    
+    await api
+    .post('/api/blogs')
+    .send(newBlog)
+    .expect(201)
+    .expect('Content-Type', /application\/json/)
+
+    const response = await api.get('/api/blogs')
+    savedblog = response.body.pop()
+    delete savedblog.id
+    assert.deepStrictEqual(savedblog, newBlog)
+})
+ 
 after(async () => {
   await mongoose.connection.close()
 })
